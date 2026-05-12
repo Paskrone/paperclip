@@ -26,4 +26,13 @@ if [ "$changed" = "1" ]; then
     chown -R node:node /paperclip
 fi
 
+# Railway-Kompatibilität: gemountete Volumes kommen mit root:root-Ownership
+# unabhängig vom Dockerfile-build-chown. Wir prüfen + korrigieren das hier
+# zur Laufzeit. Idempotent — wenn das Volume bereits dem node-User gehört,
+# ist das ein No-Op.
+if [ ! -w /paperclip ] || [ "$(stat -c '%u' /paperclip)" != "$(id -u node)" ]; then
+    echo "Fixing /paperclip ownership (Railway-volume root → node)"
+    chown -R node:node /paperclip
+fi
+
 exec gosu node "$@"
