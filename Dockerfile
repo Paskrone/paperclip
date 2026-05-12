@@ -77,7 +77,10 @@ ENV NODE_ENV=production \
   PAPERCLIP_DEPLOYMENT_EXPOSURE=private \
   OPENCODE_ALLOW_ALL_MODELS=true
 
-VOLUME ["/paperclip"]
+# Railway-Kompatibilität: VOLUME-Direktiven werden vom Railway-Builder
+# abgelehnt. Persistenz für /paperclip wird über Railway-Service-Volumes
+# konfiguriert (Settings → Volumes → mount path /paperclip). Original-
+# Direktive: VOLUME ["/paperclip"]
 EXPOSE 3100
 
 ENTRYPOINT ["docker-entrypoint.sh"]
